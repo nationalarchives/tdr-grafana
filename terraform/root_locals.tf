@@ -9,4 +9,3 @@ locals {
     "CostCentre", data.aws_ssm_parameter.cost_centre.value
   )
 }
-
