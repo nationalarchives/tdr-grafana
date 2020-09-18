@@ -23,19 +23,6 @@ resource "aws_ecs_cluster" "grafana_ecs" {
   )
 }
 
-data "template_file" "app" {
-  template = file("modules/grafana/templates/grafana.json.tpl")
-
-  vars = {
-    admin_user          = aws_ssm_parameter.grafana_admin_user.name
-    admin_user_password = aws_ssm_parameter.grafana_admin_password.name
-    app_image           = "grafana/grafana:latest"
-    app_port            = local.app_port
-    app_environment     = var.environment
-    aws_region          = var.region
-  }
-}
-
 resource "aws_ecs_task_definition" "grafana_task" {
   family                   = "${var.container_name}-${var.environment}"
   execution_role_arn       = aws_iam_role.grafana_ecs_execution.arn
@@ -43,8 +30,18 @@ resource "aws_ecs_task_definition" "grafana_task" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
   memory                   = 3072
-  container_definitions    = data.template_file.app.rendered
-  task_role_arn            = aws_iam_role.grafana_ecs_task.arn
+  container_definitions = templatefile(
+    "${path.module}/templates/grafana.json.tpl",
+    {
+      admin_user          = aws_ssm_parameter.grafana_admin_user.name
+      admin_user_password = aws_ssm_parameter.grafana_admin_password.name
+      app_image           = "grafana/grafana:latest"
+      app_port            = local.app_port
+      app_environment     = var.environment
+      aws_region          = var.region
+    }
+  )
+  task_role_arn = aws_iam_role.grafana_ecs_task.arn
 
   tags = merge(
     var.common_tags,
@@ -77,7 +74,7 @@ resource "aws_ecs_service" "grafana_service" {
 
 resource "aws_iam_role" "grafana_ecs_execution" {
   name               = "TDRGrafanaAppExecutionRole${title(var.environment)}"
-  assume_role_policy = data.template_file.ecs_assume_role.rendered
+  assume_role_policy = templatefile("${path.module}/templates/ecs_assume_role.json.tpl", {})
 
   tags = merge(
     var.common_tags,
@@ -89,7 +86,7 @@ resource "aws_iam_role" "grafana_ecs_execution" {
 
 resource "aws_iam_role" "grafana_ecs_task" {
   name               = "TDRGrafanaAppTaskRole${title(var.environment)}"
-  assume_role_policy = data.template_file.ecs_assume_role.rendered
+  assume_role_policy = templatefile("${path.module}/templates/ecs_assume_role.json.tpl", {})
 
   tags = merge(
     var.common_tags,
@@ -99,37 +96,27 @@ resource "aws_iam_role" "grafana_ecs_task" {
   )
 }
 
-data "template_file" "assume_grafana_env_monitoring_roles" {
-  template = file("modules/grafana/templates/assume_grafana_env_monitoring_roles_policy.json.tpl")
-
-  vars = {
-    intg_account_id    = data.aws_ssm_parameter.intg_account_id.value
-    prod_account_id    = data.aws_ssm_parameter.prod_account_id.value
-    staging_account_id = data.aws_ssm_parameter.staging_account_id.value
-  }
-}
-
-data "template_file" "ecs_assume_role" {
-  template = file("modules/grafana/templates/ecs_assume_role.json.tpl")
-}
-
-data "template_file" "grafana_ecs_execution" {
-  template = file("modules/grafana/templates/grafana_ecs_execution_policy.json.tpl")
-
-  vars = {
-    cloudwatch_log_group = aws_cloudwatch_log_group.grafana_log_group.arn
-  }
-}
-
 resource "aws_iam_policy" "grafana_ecs_execution" {
-  name   = "TDRGrafanaEcsExecutionPolicy${title(var.environment)}"
-  path   = "/"
-  policy = data.template_file.grafana_ecs_execution.rendered
+  name = "TDRGrafanaEcsExecutionPolicy${title(var.environment)}"
+  path = "/"
+  policy = templatefile(
+    "${path.module}/templates/grafana_ecs_execution_policy.json.tpl",
+    {
+      cloudwatch_log_group = aws_cloudwatch_log_group.grafana_log_group.arn
+    }
+  )
 }
 
 resource "aws_iam_policy" "assume_grafana_env_monitoring_roles" {
-  name   = "TDRGrafanaEnvMonitoringAssumeRoles"
-  policy = data.template_file.assume_grafana_env_monitoring_roles.rendered
+  name = "TDRGrafanaEnvMonitoringAssumeRoles"
+  policy = templatefile(
+    "${path.module}/templates/assume_grafana_env_monitoring_roles_policy.json.tpl",
+    {
+      intg_account_id    = data.aws_ssm_parameter.intg_account_id.value,
+      prod_account_id    = data.aws_ssm_parameter.prod_account_id.value,
+      staging_account_id = data.aws_ssm_parameter.staging_account_id.value
+    }
+  )
 }
 
 resource "aws_iam_role_policy_attachment" "grafana_ecs_execution" {
