@@ -1,16 +1,11 @@
-resource "random_password" "grafana_password" {
-  length  = 16
-  special = false
+data "aws_ssm_parameter" "intg_account_id" {
+  name = "/${var.environment}/intg_account"
 }
 
-resource "aws_ssm_parameter" "grafana_admin_password" {
-  name  = "/${var.environment}/grafana/admin/password"
-  type  = "SecureString"
-  value = random_password.grafana_password.result
+data "aws_ssm_parameter" "prod_account_id" {
+  name = "/${var.environment}/prod_account"
 }
 
-resource "aws_ssm_parameter" "grafana_admin_user" {
-  name  = "/${var.environment}/grafana/admin/user"
-  type  = "SecureString"
-  value = "tdr-grafana-admin-${var.environment}"
+data "aws_ssm_parameter" "staging_account_id" {
+  name = "/${var.environment}/staging_account"
 }

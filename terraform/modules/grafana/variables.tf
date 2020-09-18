@@ -14,6 +14,8 @@ variable "container_name" {}
 
 variable "dns_zone" {}
 
+variable "ecs_task_role_name" {}
+
 variable "environment" {}
 
 variable "region" {}

@@ -10,6 +10,16 @@ module "grafana" {
   dns_zone             = var.dns_zone
   environment          = local.environment
   region               = local.aws_region
+  ecs_task_role_name   = module.grafana_ecs.grafana_ecs_task_role_name
+}
+
+module "grafana_ecs" {
+  source               = "./tdr-terraform-modules/ecs"
+  common_tags          = local.common_tags
+  grafana_build        = true
+  project              = "tdr"
+  app_name             = "grafana"
+  alb_target_group_arn = module.grafana_alb.alb_target_group_arn
 }
 
 module "grafana_certificate" {

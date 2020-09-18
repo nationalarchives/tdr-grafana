@@ -1,3 +1,7 @@
+locals {
+  app_port = 3000
+}
+
 data "aws_ssm_parameter" "external_ips" {
   name = "/${var.environment}/external_ips"
 }
