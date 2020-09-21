@@ -8,53 +8,54 @@ module "grafana" {
   common_tags          = local.common_tags
   container_name       = var.function
   dns_zone             = var.dns_zone
+  ecs_task_role_name   = module.grafana_ecs.grafana_ecs_task_role_name
   environment          = local.environment
   region               = local.aws_region
-  ecs_task_role_name   = module.grafana_ecs.grafana_ecs_task_role_name
 }
 
 module "grafana_ecs" {
   source               = "./tdr-terraform-modules/ecs"
+  alb_target_group_arn = module.grafana_alb.alb_target_group_arn
+  app_name             = "grafana"
   common_tags          = local.common_tags
   grafana_build        = true
   project              = "tdr"
-  app_name             = "grafana"
-  alb_target_group_arn = module.grafana_alb.alb_target_group_arn
+  vpc_name_tag         = module.grafana.vpc_tag_name
 }
 
 module "grafana_certificate" {
   source      = "./tdr-terraform-modules/certificatemanager"
-  project     = var.project
-  function    = var.function
+  common_tags = local.common_tags
   dns_zone    = var.dns_zone
   domain_name = var.domain_name
-  common_tags = local.common_tags
+  function    = var.function
+  project     = var.project
 }
 
 module "grafana_alb" {
   source                = "./tdr-terraform-modules/alb"
-  project               = var.project
-  function              = var.function
-  environment           = local.environment
   alb_log_bucket        = module.alb_logs_s3.s3_bucket_id
   alb_security_group_id = module.grafana.alb_security_group_id
   alb_target_group_port = 3000
   alb_target_type       = "ip"
   certificate_arn       = module.grafana_certificate.certificate_arn
+  common_tags           = local.common_tags
   domain_name           = var.domain_name
+  environment           = local.environment
+  function              = var.function
   health_check_matcher  = "200,302"
   health_check_path     = ""
   http_listener         = false
+  project               = var.project
   public_subnets        = module.grafana.public_subnets
   vpc_id                = module.grafana.vpc_id
-  common_tags           = local.common_tags
 }
 
 module "alb_logs_s3" {
   source        = "./tdr-terraform-modules/s3"
-  project       = "tdr"
-  function      = "${var.function}-logs"
   access_logs   = false
   bucket_policy = "alb_logging_euwest2"
   common_tags   = local.common_tags
+  function      = "${var.function}-logs"
+  project       = "tdr"
 }
