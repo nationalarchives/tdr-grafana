@@ -4,8 +4,6 @@ variable "alb_target_group_arn" {}
 
 variable "alb_zone_id" {}
 
-variable "app_name" {}
-
 variable "az_count" {}
 
 variable "common_tags" {}
@@ -19,3 +17,9 @@ variable "ecs_task_role_name" {}
 variable "environment" {}
 
 variable "region" {}
+
+variable "vpc_cidr_block" {}
+
+variable "vpc_id" {}
+
+variable "vpc_name_tag" {}

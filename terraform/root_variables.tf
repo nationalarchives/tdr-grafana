@@ -1,3 +1,7 @@
+variable "az_count" {
+  default = 2
+}
+
 variable "default_aws_region" {
   default = "eu-west-2"
 }
@@ -24,4 +28,8 @@ variable "project" {
 
 variable "tag_prefix" {
   default = "grafana"
+}
+
+variable "vpc_name_tag" {
+  default = "tdr-jenkins-vpc-mgmt"
 }
