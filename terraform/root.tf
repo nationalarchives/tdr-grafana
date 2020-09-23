@@ -2,20 +2,16 @@ module "grafana" {
   source = "./modules/grafana"
 
   alb_dns_name                = module.grafana_alb.alb_dns_name
-  alb_target_group_arn        = module.grafana_alb.alb_target_group_arn
   alb_zone_id                 = module.grafana_alb.alb_zone_id
   az_count                    = var.az_count
   common_tags                 = local.common_tags
-  container_name              = var.function
   database_availability_zones = local.database_availability_zones
   dns_zone                    = var.dns_zone
   ecs_task_role_name          = module.grafana_ecs.grafana_ecs_task_role_name
   environment                 = local.environment
   kms_key_id                  = module.encryption_key.kms_key_arn
-  region                      = local.aws_region
   vpc_cidr_block              = data.aws_vpc.main.cidr_block
   vpc_id                      = data.aws_vpc.main.id
-  vpc_name_tag                = var.vpc_name_tag
 }
 
 module "grafana_ecs" {

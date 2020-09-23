@@ -26,10 +26,6 @@ variable "project" {
   default     = "tdr"
 }
 
-variable "tag_prefix" {
-  default = "grafana"
-}
-
 variable "vpc_name_tag" {
   default = "tdr-jenkins-vpc-mgmt"
 }
