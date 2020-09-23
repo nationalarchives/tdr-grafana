@@ -1,19 +1,21 @@
 module "grafana" {
   source = "./modules/grafana"
 
-  alb_dns_name         = module.grafana_alb.alb_dns_name
-  alb_target_group_arn = module.grafana_alb.alb_target_group_arn
-  alb_zone_id          = module.grafana_alb.alb_zone_id
-  az_count             = var.az_count
-  common_tags          = local.common_tags
-  container_name       = var.function
-  dns_zone             = var.dns_zone
-  ecs_task_role_name   = module.grafana_ecs.grafana_ecs_task_role_name
-  environment          = local.environment
-  region               = local.aws_region
-  vpc_cidr_block       = data.aws_vpc.main.cidr_block
-  vpc_id               = data.aws_vpc.main.id
-  vpc_name_tag         = var.vpc_name_tag
+  alb_dns_name                = module.grafana_alb.alb_dns_name
+  alb_target_group_arn        = module.grafana_alb.alb_target_group_arn
+  alb_zone_id                 = module.grafana_alb.alb_zone_id
+  az_count                    = var.az_count
+  common_tags                 = local.common_tags
+  container_name              = var.function
+  database_availability_zones = local.database_availability_zones
+  dns_zone                    = var.dns_zone
+  ecs_task_role_name          = module.grafana_ecs.grafana_ecs_task_role_name
+  environment                 = local.environment
+  kms_key_id                  = module.encryption_key.kms_key_arn
+  region                      = local.aws_region
+  vpc_cidr_block              = data.aws_vpc.main.cidr_block
+  vpc_id                      = data.aws_vpc.main.id
+  vpc_name_tag                = var.vpc_name_tag
 }
 
 module "grafana_ecs" {
@@ -25,7 +27,6 @@ module "grafana_ecs" {
   ecs_task_security_group_id = data.aws_security_group.ecs_task_security_group.id
   grafana_build              = true
   project                    = var.project
-  vpc_id                     = data.aws_vpc.main.id
   vpc_private_subnet_ids     = data.aws_subnet_ids.private.ids
 }
 
@@ -67,4 +68,12 @@ module "alb_logs_s3" {
   common_tags   = local.common_tags
   function      = "${var.function}-logs"
   project       = var.project
+}
+
+module "encryption_key" {
+  source      = "./tdr-terraform-modules/kms"
+  project     = "${var.project}-grafana"
+  function    = "encryption"
+  environment = local.environment
+  common_tags = local.common_tags
 }

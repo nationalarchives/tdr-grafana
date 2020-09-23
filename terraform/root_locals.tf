@@ -6,6 +6,7 @@ locals {
     "Terraform", true,
     "CostCentre", data.aws_ssm_parameter.cost_centre.value
   )
-  environment = "mgmt"
-  tag_prefix  = var.tag_prefix
+  database_availability_zones = ["eu-west-2a", "eu-west-2b"]
+  environment                 = "mgmt"
+  tag_prefix                  = var.tag_prefix
 }

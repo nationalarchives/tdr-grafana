@@ -10,11 +10,15 @@ variable "common_tags" {}
 
 variable "container_name" {}
 
+variable "database_availability_zones" {}
+
 variable "dns_zone" {}
 
 variable "ecs_task_role_name" {}
 
 variable "environment" {}
+
+variable "kms_key_id" {}
 
 variable "region" {}
 

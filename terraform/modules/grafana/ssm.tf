@@ -1,11 +1,17 @@
-data "aws_ssm_parameter" "intg_account_id" {
-  name = "/${var.environment}/intg_account"
+resource "aws_ssm_parameter" "database_url" {
+  name  = "/${var.environment}/grafana/database/url"
+  type  = "SecureString"
+  value = aws_rds_cluster.grafana_database.endpoint
 }
 
-data "aws_ssm_parameter" "prod_account_id" {
-  name = "/${var.environment}/prod_account"
+resource "aws_ssm_parameter" "database_username" {
+  name  = "/${var.environment}/grafana/database/username"
+  type  = "SecureString"
+  value = aws_rds_cluster.grafana_database.master_username
 }
 
-data "aws_ssm_parameter" "staging_account_id" {
-  name = "/${var.environment}/staging_account"
+resource "aws_ssm_parameter" "database_password" {
+  name  = "/${var.environment}/grafana/database/password"
+  type  = "SecureString"
+  value = aws_rds_cluster.grafana_database.master_password
 }

@@ -49,3 +49,28 @@ resource "aws_security_group" "ecs_tasks" {
     map("Name", "tdr-grafana-ecs-task-security-group-${var.environment}")
   )
 }
+
+resource "aws_security_group" "database" {
+  name        = "tdr-grafana-database-security-group-${var.environment}"
+  description = "Allow inbound access from the Grafana load balancer only"
+  vpc_id      = var.vpc_id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 5432
+    to_port         = 5432
+    security_groups = [aws_security_group.ecs_tasks.id]
+  }
+
+  egress {
+    protocol        = "-1"
+    from_port       = 0
+    to_port         = 0
+    security_groups = [aws_security_group.ecs_tasks.id]
+  }
+
+  tags = merge(
+    var.common_tags,
+    map("Name", "tdr-grafana-database-security-group-${var.environment}")
+  )
+}
