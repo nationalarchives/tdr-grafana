@@ -52,7 +52,7 @@ resource "aws_security_group" "ecs_tasks" {
 
 resource "aws_security_group" "database" {
   name        = "tdr-grafana-database-security-group-${var.environment}"
-  description = "Allow inbound access from the Grafana load balancer only"
+  description = "Allow access to and from the ECS task only"
   vpc_id      = var.vpc_id
 
   ingress {

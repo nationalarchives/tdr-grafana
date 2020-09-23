@@ -17,12 +17,12 @@ variable "domain_name" {
 }
 
 variable "function" {
-  description = "forms the second part of the bucket name, eg. upload"
+  description = "forms the second part of the alb"
   default     = "grafana"
 }
 
 variable "project" {
-  description = "abbreviation for the project, e.g. tdr, forms the first part of the bucket name"
+  description = "abbreviation for the project"
   default     = "tdr"
 }
 

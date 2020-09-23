@@ -7,11 +7,6 @@ data "aws_nat_gateway" "public" {
   }
 }
 
-# Bring default security group under Terraform management and remove all rules
-resource "aws_default_security_group" "default" {
-  vpc_id = var.vpc_id
-}
-
 # Create var.az_count private subnets, each in a different AZ
 resource "aws_subnet" "private" {
   count             = var.az_count
