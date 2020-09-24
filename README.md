@@ -67,3 +67,9 @@ Four data sources have been configured, corresponding to each of the TDR environ
 For the integration, production and staging data sources, access to the metrics is provided by assuming an IAM role in the corresponding TDR environment which has permission to read the necessary metrics within that environment.
 
 IAM assumed roles are configured in the tdr-terraform-backend repository: https://github.com/nationalarchives/tdr-terraform-backend
+
+## Adding a Dashboard
+
+When adding a new dashboard for TDR, ensure the following:
+* The dashboard is added to the TDR folder
+* The dashboard is tagged with `TDR`
