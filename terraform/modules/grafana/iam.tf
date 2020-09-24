@@ -23,7 +23,7 @@ resource "aws_iam_policy" "assume_grafana_env_monitoring_roles" {
 }
 
 resource "aws_iam_policy" "grafana_mgmt_log_permissions" {
-  name = "TDRGrafanaMgmtLogPermissions"
+  name   = "TDRGrafanaMgmtLogPermissions"
   policy = templatefile("${path.module}/templates/grafana_mgmt_log_permissions_policy.json.tpl", {})
 }
 
@@ -34,5 +34,5 @@ resource "aws_iam_role_policy_attachment" "grafana_env_monitoring" {
 
 resource "aws_iam_role_policy_attachment" "grafana_mgmt_log_permissions_attach" {
   policy_arn = aws_iam_policy.grafana_mgmt_log_permissions.arn
-  role = var.ecs_task_role_name[0]
+  role       = var.ecs_task_role_name[0]
 }
