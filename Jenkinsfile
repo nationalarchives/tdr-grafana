@@ -1,5 +1,5 @@
 terraformDeployJob(
-  stage: "management",
+	stage: "management",
 	repo: "tdr-grafana",
 	taskRoleName: "TDRTerraformRoleMgmt",
 	deployment: "Grafana",
