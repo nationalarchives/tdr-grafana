@@ -1,4 +1,5 @@
 library("tdr-jenkinslib")
+repo = "tdr-grafana"
 
 pipeline {
 	agent {
@@ -27,26 +28,27 @@ pipeline {
 			stages {
 				stage('Set up Terraform workspace') {
 					steps {
-						echo 'Initializing Terraform...'
-						sh "git clone https://github.com/nationalarchives/tdr-terraform-modules.git"
-						sshagent(['github-jenkins']) {
-							sh("git clone git@github.com:nationalarchives/tdr-configurations.git")
-						}
-						sh 'terraform init'
-						sh "terraform workspace select default"
-						sh 'terraform workspace list'
+					  dir("./terraform") {
+						  echo 'Initializing Terraform...'
+							sh "git clone https://github.com/nationalarchives/tdr-terraform-modules.git"
+							sh 'terraform init'
+							sh "terraform workspace select default"
+							sh 'terraform workspace list'
+					  }
 					}
 				}
 				stage('Run Terraform plan') {
 					steps {
-						echo 'Running Terraform plan...'
-						sh 'terraform plan'
-						script {
-							tdr.postToDaTdrSlackChannel(colour: "good",
-											message: "Terraform plan complete for TDR Grafana. " +
-															"View here for plan: https://jenkins.tdr-management.nationalarchives.gov.uk/job/" +
-															"${JOB_NAME.replaceAll(' ', '%20')}/${BUILD_NUMBER}/console"
-							)
+					  dir("./terraform") {
+						  echo 'Running Terraform plan...'
+							sh 'terraform plan'
+							script {
+							  tdr.postToDaTdrSlackChannel(colour: "good",
+							    message: "Terraform plan complete for TDR Grafana. " +
+								    "View here for plan: https://jenkins.tdr-management.nationalarchives.gov.uk/job/" +
+									  "${JOB_NAME.replaceAll(' ', '%20')}/${BUILD_NUMBER}/console"
+							  )
+							}
 						}
 					}
 				}
