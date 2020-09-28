@@ -1,7 +1,7 @@
 library("tdr-jenkinslib")
 
 terraformDeployJob(
-	stage: "management",
+	stage: "mgmt",
 	repo: "tdr-grafana",
 	taskRoleName: "TDRTerraformRoleMgmt",
 	deployment: "Grafana",
