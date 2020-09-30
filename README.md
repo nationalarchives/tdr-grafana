@@ -6,7 +6,7 @@ There is a single TDR Grafana instance running in the TDR management AWS Account
 
 The ECS cluster is created by Terraform, and runs on the Jenkins vpc on the TDR management AWS account.
 
-TDR Jenkins documentation: https://github.com/nationalarchives/tdr-jenkins/blob/master/README.md 
+For further documentation on the TDR Jenkins configuration see here: https://github.com/nationalarchives/tdr-jenkins
 
 ## Project components
 
@@ -20,22 +20,11 @@ This creates the following AWS resources:
 * Security groups
 * AWS SSM parameters
 * Database (postgres)
-* IAM permissions for the ECS task role to read the necessary metrics from the different TDR environments
+* IAM permissions for the ECS task role to read the necessary metrics from the different TDR environments (management, integration, production and staging)
 
 The Terraform uses some shared components from the tdr-terraform-modules repository: https://github.com/nationalarchives/tdr-terraform-modules
 
 The Grafana instance runs on the existing Jenkins Vpc in the TDR management AWS account.
-
-#### Running the Terraform
-
-1. Clone the tdr-terraform-modules into the `terraform` directory:
-  ``` 
-  cd terraform
-  git clone git@github.com:nationalarchives/tdr-terraform-modules.git
-  ```
-2. In the `terraform` directory ensure that running terraform in the `default` workspace
-
-3. Run `terraform plan` and `terraform apply` command as necessary to make changes to the
 
 ### Docker image
 
@@ -43,14 +32,18 @@ The application uses the standard grafana docker image: https://hub.docker.com/r
 
 The ECS task definition pulls the latest version of the Grafana image.
 
-## Deploying
+## Deployment
 
-To deploy changes to the Grafana:
+There is a Jenkins job configured to deploy changes to the Grafana configuration: https://jenkins.tdr-management.nationalarchives.gov.uk/job/TDR%20Grafana%20Deploy/
+
+To deploy changes to the Grafana instance:
 
 1. Make changes to the Terraform
-2. Run `terraform` apply command
+2. Run `terraform` plan command locally to check changes
+3. Merge changes to master branch
+4. Run the Jenkins job: TDR Grafana Deploy
 
-## Updating Grafana Visualisations
+## Creating and Updating Grafana Visualisations
 
 Documentation for using Grafana can be found here: https://grafana.com/docs/grafana/latest/
 
@@ -66,10 +59,12 @@ Four data sources have been configured, corresponding to each of the TDR environ
 
 For the integration, production and staging data sources, access to the metrics is provided by assuming an IAM role in the corresponding TDR environment which has permission to read the necessary metrics within that environment.
 
+For the management data sources, permission to access the metrics is given to the IAM ECS task role.
+
 IAM assumed roles are configured in the tdr-terraform-backend repository: https://github.com/nationalarchives/tdr-terraform-backend
 
 ## Adding a Dashboard
 
-When adding a new dashboard for TDR, ensure the following:
-* The dashboard is added to the TDR folder
-* The dashboard is tagged with `TDR`
+When adding a new dashboard for TDR, ensure that the dashboard is:
+* added to the TDR folder
+* tagged with `TDR`
