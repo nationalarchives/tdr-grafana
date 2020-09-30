@@ -4,7 +4,7 @@ Repository containing the configuration necessary to setup a Grafana instance fo
 
 There is a single TDR Grafana instance running in the TDR management AWS Account.
 
-The ECS cluster is created by Terraform, and runs on the Jenkins vpc on the TDR management AWS account.
+The ECS cluster is created by Terraform, and runs on the Jenkins VPC on the TDR management AWS account.
 
 For further documentation on the TDR Jenkins configuration see here: https://github.com/nationalarchives/tdr-jenkins
 
@@ -24,7 +24,7 @@ This creates the following AWS resources:
 
 The Terraform uses some shared components from the tdr-terraform-modules repository: https://github.com/nationalarchives/tdr-terraform-modules
 
-The Grafana instance runs on the existing Jenkins Vpc in the TDR management AWS account.
+The Grafana instance runs on the existing Jenkins VPC in the TDR management AWS account.
 
 ### Docker image
 
