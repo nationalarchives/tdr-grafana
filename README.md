@@ -36,6 +36,10 @@ The ECS task definition pulls the latest version of the Grafana image.
 
 There is a Jenkins job configured to deploy changes to the Grafana configuration: https://jenkins.tdr-management.nationalarchives.gov.uk/job/TDR%20Grafana%20Deploy/
 
+**NOTE: The Jenkins Job requires a STAGE parameter to be set. This is ignored by the job, as it always defaults to the management environment.**
+
+There is a tech debt item to address this issue: https://national-archives.atlassian.net/jira/software/projects/TDR/boards/6/backlog?selectedIssue=TDR-540
+
 To deploy changes to the Grafana instance:
 
 1. Make changes to the Terraform
