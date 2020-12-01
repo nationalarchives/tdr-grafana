@@ -32,6 +32,12 @@ The application uses the standard grafana docker image: https://hub.docker.com/r
 
 The ECS task definition pulls the latest version of the Grafana image.
 
+## Docker Container
+
+The docker container runs with the pre-defined `grafana` user.
+
+This user is part of the `root` group, but *does not* have root user permissions.
+
 ## Deployment
 
 There is a Jenkins job configured to deploy changes to the Grafana configuration: https://jenkins.tdr-management.nationalarchives.gov.uk/job/TDR%20Grafana%20Deploy/
