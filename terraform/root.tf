@@ -24,6 +24,7 @@ module "grafana_ecs" {
   grafana_build              = true
   project                    = var.project
   vpc_private_subnet_ids     = data.aws_subnet_ids.private.ids
+  vpc_id                     = data.aws_vpc.main.id
 }
 
 module "grafana_certificate" {
