@@ -1,3 +1,7 @@
+module "global_parameters" {
+  source = "./tdr-configurations/terraform"
+}
+
 module "grafana" {
   source = "./modules/grafana"
 
@@ -9,6 +13,7 @@ module "grafana" {
   dns_zone                    = var.dns_zone
   ecs_task_role_name          = module.grafana_ecs.grafana_ecs_task_role_name
   environment                 = local.environment
+  ip_allowlist                = local.ip_allowlist
   kms_key_id                  = module.encryption_key.kms_key_arn
   vpc_cidr_block              = data.aws_vpc.main.cidr_block
   vpc_id                      = data.aws_vpc.main.id

@@ -38,6 +38,12 @@ The docker container runs with the pre-defined `grafana` user.
 
 This user is part of the `root` group, but *does not* have root user permissions.
 
+## Local development
+
+If this is the first time you have run this project, clone the [modules](https://github.com/nationalarchives/tdr-terraform-modules) and [configurations](https://github.com/nationalarchives/tdr-configurations) repos into the terraform directory.
+
+Otherwise, pull the latest version of master for those repos.
+
 ## Deployment
 
 There is a Jenkins job configured to deploy changes to the Grafana configuration: https://jenkins.tdr-management.nationalarchives.gov.uk/job/TDR%20Grafana%20Deploy/
