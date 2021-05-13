@@ -8,4 +8,8 @@ locals {
   )
   database_availability_zones = ["eu-west-2a", "eu-west-2b"]
   environment                 = "mgmt"
+
+  developer_ip_list = split(",", module.global_parameters.developer_ips)
+  trusted_ip_list   = split(",", module.global_parameters.trusted_ips)
+  ip_allowlist      = concat(local.developer_ip_list, local.trusted_ip_list)
 }

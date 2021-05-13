@@ -14,6 +14,10 @@ variable "ecs_task_role_name" {}
 
 variable "environment" {}
 
+variable "ip_allowlist" {
+  type = list
+}
+
 variable "kms_key_id" {}
 
 variable "vpc_cidr_block" {}

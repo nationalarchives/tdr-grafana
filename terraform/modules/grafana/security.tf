@@ -2,10 +2,6 @@ locals {
   app_port = 3000
 }
 
-data "aws_ssm_parameter" "external_ips" {
-  name = "/${var.environment}/external_ips"
-}
-
 resource "aws_security_group" "grafana_alb_group" {
   name        = "tdr-grafana-alb-security-group"
   description = "Controls access to the Grafana load balancer"
@@ -14,7 +10,7 @@ resource "aws_security_group" "grafana_alb_group" {
     protocol    = "tcp"
     from_port   = 443
     to_port     = 443
-    cidr_blocks = split(",", data.aws_ssm_parameter.external_ips.value)
+    cidr_blocks = var.ip_allowlist
   }
 
   egress {
