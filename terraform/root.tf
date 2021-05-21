@@ -25,6 +25,7 @@ module "grafana_ecs" {
   alb_target_group_arn       = module.grafana_alb.alb_target_group_arn
   app_name                   = "grafana"
   common_tags                = local.common_tags
+  domain_name                = var.domain_name
   ecs_task_security_group_id = data.aws_security_group.ecs_task_security_group.id
   grafana_build              = true
   project                    = var.project
