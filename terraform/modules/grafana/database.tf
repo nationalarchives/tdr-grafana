@@ -24,7 +24,7 @@ resource "random_string" "snapshot_prefix" {
 resource "aws_rds_cluster" "grafana_database" {
   cluster_identifier_prefix       = "grafana-db-postgres-${var.environment}"
   engine                          = "aurora-postgresql"
-  engine_version                  = "11.6"
+  engine_version                  = "11.9"
   availability_zones              = var.database_availability_zones
   database_name                   = "grafana"
   master_username                 = "grafana_admin"
@@ -34,6 +34,7 @@ resource "aws_rds_cluster" "grafana_database" {
   kms_key_id                      = var.kms_key_id
   vpc_security_group_ids          = aws_security_group.database.*.id
   db_subnet_group_name            = aws_db_subnet_group.user_subnet_group.name
+  deletion_protection             = true
   enabled_cloudwatch_logs_exports = ["postgresql"]
   tags = merge(
     var.common_tags,
@@ -57,7 +58,7 @@ resource "aws_rds_cluster_instance" "user_database_instance" {
   identifier_prefix    = "content-db-postgres-instance-${var.environment}"
   cluster_identifier   = aws_rds_cluster.grafana_database.id
   engine               = "aurora-postgresql"
-  engine_version       = "11.6"
+  engine_version       = "11.9"
   instance_class       = "db.t3.medium"
   db_subnet_group_name = aws_db_subnet_group.user_subnet_group.name
 }
