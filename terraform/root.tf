@@ -57,7 +57,6 @@ module "grafana_alb" {
   function              = var.function
   health_check_matcher  = "200,302"
   health_check_path     = ""
-  http_listener         = false
   project               = var.project
   public_subnets        = module.grafana.public_subnets
   vpc_id                = data.aws_vpc.main.id
