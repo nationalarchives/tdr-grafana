@@ -34,6 +34,7 @@ resource "aws_rds_cluster" "grafana_database" {
   kms_key_id                      = var.kms_key_id
   vpc_security_group_ids          = aws_security_group.database.*.id
   db_subnet_group_name            = aws_db_subnet_group.user_subnet_group.name
+  deletion_protection             = true
   enabled_cloudwatch_logs_exports = ["postgresql"]
   tags = merge(
     var.common_tags,
