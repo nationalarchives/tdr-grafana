@@ -52,7 +52,6 @@ module "grafana_alb" {
   alb_target_type       = "ip"
   certificate_arn       = module.grafana_certificate.certificate_arn
   common_tags           = local.common_tags
-  domain_name           = var.domain_name
   environment           = local.environment
   function              = var.function
   health_check_matcher  = "200,302"
