@@ -4,6 +4,7 @@ locals {
     "Environment", local.environment,
     "Owner", "TDR",
     "Terraform", true,
+    "TerraformSource", "https://github.com/nationalarchives/tdr-grafana/tree/master/terraform",
     "CostCentre", data.aws_ssm_parameter.cost_centre.value
   )
   database_availability_zones = ["eu-west-2a", "eu-west-2b"]
