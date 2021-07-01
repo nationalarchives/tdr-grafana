@@ -2,5 +2,6 @@ library("tdr-jenkinslib")
 
 terraformCheckJob(
   repo: "tdr-grafana",
-  terraformDirectoryPath: "./terraform"
+  terraformDirectoryPath: "./terraform",
+  terraformNode: "terraform-v13"
 )
