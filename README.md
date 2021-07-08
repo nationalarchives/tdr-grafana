@@ -12,6 +12,8 @@ For further documentation on the TDR Jenkins configuration see here: https://git
 
 ### Terraform
 
+**Important Note**: tdr-grafana uses v13 of Terraform. Ensure that Terraform v13 is installed before proceeding.
+
 This creates the following AWS resources:
 * Subnets
 * ECS cluster
