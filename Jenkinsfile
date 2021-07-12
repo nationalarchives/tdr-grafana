@@ -6,5 +6,6 @@ terraformDeployJob(
   repo: "tdr-grafana",
   taskRoleName: "TDRTerraformRoleMgmt",
   deployment: "Grafana",
-  terraformDirectoryPath: "./terraform"
+  terraformDirectoryPath: "./terraform",
+  modulesBranch: "update-aws-provider-version-support"
 )
