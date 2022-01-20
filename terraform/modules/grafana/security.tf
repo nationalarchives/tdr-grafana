@@ -49,7 +49,9 @@ resource "aws_security_group" "ecs_tasks" {
 
   tags = merge(
     var.common_tags,
-    map("Name", "tdr-grafana-ecs-task-security-group-${var.environment}")
+    tomap({
+      "Name" = "tdr-grafana-ecs-task-security-group-${var.environment}"
+    })
   )
 }
 
@@ -74,6 +76,8 @@ resource "aws_security_group" "database" {
 
   tags = merge(
     var.common_tags,
-    map("Name", "tdr-grafana-database-security-group-${var.environment}")
+    tomap({
+      "Name" = "tdr-grafana-database-security-group-${var.environment}"
+    })
   )
 }

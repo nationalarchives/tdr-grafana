@@ -9,9 +9,9 @@ resource "aws_db_subnet_group" "user_subnet_group" {
 
   tags = merge(
     var.common_tags,
-    map(
-      "Name", "user-db-subnet-group-${var.environment}"
-    )
+    tomap({
+      "Name" = "user-db-subnet-group-${var.environment}"
+    })
   )
 }
 
@@ -38,9 +38,9 @@ resource "aws_rds_cluster" "grafana_database" {
   enabled_cloudwatch_logs_exports = ["postgresql"]
   tags = merge(
     var.common_tags,
-    map(
-      "Name", "grafana-db-cluster-${var.environment}"
-    )
+    tomap({
+      "Name" = "grafana-db-cluster-${var.environment}"
+    })
   )
 
   lifecycle {
