@@ -15,7 +15,7 @@ variable "ecs_task_role_name" {}
 variable "environment" {}
 
 variable "ip_allowlist" {
-  type = list
+  type = list(any)
 }
 
 variable "kms_key_id" {}

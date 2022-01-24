@@ -16,7 +16,9 @@ resource "aws_subnet" "private" {
 
   tags = merge(
     var.common_tags,
-    map("Name", "tdr-grafana-private-subnet-${count.index}-${var.environment}")
+    tomap({
+      "Name" = "tdr-grafana-private-subnet-${count.index}-${var.environment}"
+    })
   )
 }
 
@@ -30,7 +32,9 @@ resource "aws_subnet" "public" {
 
   tags = merge(
     var.common_tags,
-    map("Name", "tdr-grafana-public-subnet-${count.index}-${var.environment}")
+    tomap({
+      "Name" = "tdr-grafana-public-subnet-${count.index}-${var.environment}"
+    })
   )
 }
 
@@ -46,7 +50,9 @@ resource "aws_route_table" "private" {
 
   tags = merge(
     var.common_tags,
-    map("Name", "route-table-${count.index}-tdr-grafana-${var.environment}")
+    tomap({
+      "Name" = "route-table-${count.index}-tdr-grafana-${var.environment}"
+    })
   )
 }
 
