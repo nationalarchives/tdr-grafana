@@ -6,7 +6,5 @@ terraformDeployJob(
   repo: "tdr-grafana",
   taskRoleName: "TDRTerraformRoleMgmt",
   deployment: "Grafana",
-  terraformDirectoryPath: "./terraform",
-  terraformModulesBranch: "terraform-v1",
-  terraformNode: "terraform-latest"
+  terraformDirectoryPath: "./terraform"
 )
