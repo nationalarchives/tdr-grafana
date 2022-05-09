@@ -6,10 +6,27 @@ permissions:
   id-token: write
   contents: write
 jobs:
-  check:
-    uses: nationalarchives/tdr-github-actions/.github/workflows/terraform_check.yml@main
-    with:
-      working-directory: 'terraform'
-    secrets:
-      MANAGEMENT_ACCOUNT: ${{ secrets.MANAGEMENT_ACCOUNT }}
-      WORKFLOW_PAT: ${{ secrets.WORKFLOW_PAT }}
+  terraform-check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.WORKFLOW_PAT }}
+      - name: Configure AWS credentials for Lambda
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.MANAGEMENT_ACCOUNT }}:role/TDRTerraformRoleMgmt
+          aws-region: eu-west-2
+          role-session-name: TerraformRole
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.1.3
+      - run: |
+          terraform fmt -check --recursive
+          terraform init
+          terraform validate

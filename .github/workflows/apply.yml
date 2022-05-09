@@ -1,19 +1,95 @@
 name: 'Terraform apply'
 on:
+  push:
   workflow_dispatch:
 permissions:
   id-token: write
   contents: write
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    needs: setup
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.WORKFLOW_PAT }}
+      - name: Configure AWS credentials for Lambda
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.MANAGEMENT_ACCOUNT }}:role/TDRTerraformRoleMgmt
+          aws-region: eu-west-2
+          role-session-name: TerraformRole
+      - name: Terraform Plan
+        id: plan
+        env:
+          GITHUB_OWNER: nationalarchives
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+        run: |
+          terraform init
+          pip install boto3
+          terraform plan -no-color -out=out > /dev/null
+          terraform show -no-color out > out.plan
+          python $GITHUB_WORKSPACE/.github/scripts/logs.py out.plan "${{ github.run_id }}${{ github.run_attempt }}" mgmt
+      - uses: nationalarchives/tdr-github-actions/.github/actions/slack-send@main
+        with:
+          message: |
+            :book: Terraform plan ready for repository tdr-grafana environment mgmt
+            :log: View the <${{ steps.plan.outputs.log-url }}|plan logs> in the management account.
+            :white_check_mark: <https://github.com/nationalarchives/tdr-grafana/actions/runs/${{ github.run_id }}|Approve the workflow>
+          slack-url: ${{ secrets.SLACK_WEBHOOK }}
   apply:
-    uses: nationalarchives/tdr-github-actions/.github/workflows/terraform_apply.yml@main
-    with:
-      repo-name: tna-custodian
-      environment: ${{ github.event.inputs.environment }}
-      working-directory: terraform
-    secrets:
-      MANAGEMENT_ACCOUNT: ${{ secrets.MANAGEMENT_ACCOUNT }}
-      WORKFLOW_PAT: ${{ secrets.WORKFLOW_PAT }}
-      ACCOUNT_NUMBER: ${{ secrets.ACCOUNT_NUMBER }}
-      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      MGMT_ACCOUNT_NUMBER: ${{ secrets.MANAGEMENT_ACCOUNT }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+    needs:
+      - plan
+      - setup
+    environment: mgmt
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
+          token: ${{ secrets.WORKFLOW_PAT }}
+      - name: Configure AWS credentials for Lambda
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.MANAGEMENT_ACCOUNT }}:role/TDRTerraformRoleMgmt
+          aws-region: eu-west-2
+          role-session-name: TerraformRole
+      - name: Run apply
+        env:
+          GITHUB_OWNER: nationalarchives
+          GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
+        run: |
+          terraform init
+          terraform workspace select mgmt
+          terraform apply --auto-approve > /dev/null
+      - id: next-tag
+        uses: nationalarchives/tdr-github-actions/.github/actions/get-next-version@main
+        with:
+          repo-name: tdr-grafana
+      - run: |
+          git tag ${{ steps.next-tag.outputs.next-version }}
+          git push origin ${{ steps.next-tag.outputs.next-version }}
+          git branch -f release-mgmt HEAD
+          git push -f origin release-mgmt
+      - name: Send failure message
+        if: failure()
+        uses: nationalarchives/tdr-github-actions/.github/actions/slack-send@main
+        with:
+          message: ":warning: tdr-grafana deploy failed for mgmt"
+          slack-url: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Send success message
+        uses: nationalarchives/tdr-github-actions/.github/actions/slack-send@main
+        with:
+          message: ":white_check_mark: tdr-grafana deploy successful for mgmt"
+          slack-url: ${{ secrets.SLACK_WEBHOOK }}
+
+
