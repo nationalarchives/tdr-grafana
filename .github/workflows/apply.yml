@@ -1,0 +1,19 @@
+name: 'Terraform apply'
+on:
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: write
+jobs:
+  apply:
+    uses: nationalarchives/tdr-github-actions/.github/workflows/terraform_apply.yml@use-working-directory-for-apply
+    with:
+      repo-name: tna-custodian
+      environment: ${{ github.event.inputs.environment }}
+      working-directory: terraform
+    secrets:
+      MANAGEMENT_ACCOUNT: ${{ secrets.MANAGEMENT_ACCOUNT }}
+      WORKFLOW_PAT: ${{ secrets.WORKFLOW_PAT }}
+      ACCOUNT_NUMBER: ${{ secrets.ACCOUNT_NUMBER }}
+      SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      MGMT_ACCOUNT_NUMBER: ${{ secrets.MANAGEMENT_ACCOUNT }}
