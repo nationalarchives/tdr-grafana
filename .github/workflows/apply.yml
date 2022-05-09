@@ -48,7 +48,6 @@ jobs:
         working-directory: terraform
     needs:
       - plan
-      - setup
     environment: mgmt
     steps:
       - name: Checkout
