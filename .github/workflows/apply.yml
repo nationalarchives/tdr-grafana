@@ -24,9 +24,6 @@ jobs:
           role-session-name: TerraformRole
       - name: Terraform Plan
         id: plan
-        env:
-          GITHUB_OWNER: nationalarchives
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
         run: |
           terraform init
           pip install boto3
@@ -61,9 +58,6 @@ jobs:
           aws-region: eu-west-2
           role-session-name: TerraformRole
       - name: Run apply
-        env:
-          GITHUB_OWNER: nationalarchives
-          GITHUB_TOKEN: ${{ secrets.WORKFLOW_PAT }}
         run: |
           terraform init
           terraform apply --auto-approve > /dev/null
