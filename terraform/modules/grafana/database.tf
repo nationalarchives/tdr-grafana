@@ -4,8 +4,8 @@ resource "random_password" "password" {
 }
 
 resource "aws_db_subnet_group" "user_subnet_group" {
-  name       = "main-${var.environment}"
-  subnet_ids = aws_subnet.private.*.id
+  name       = "grafana-main-${var.environment}"
+  subnet_ids = var.private_subnet_ids
 
   tags = merge(
     var.common_tags,
