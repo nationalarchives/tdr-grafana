@@ -30,15 +30,3 @@ resource "aws_grafana_workspace" "management_grafana" {
     ignore_changes = [data_sources]
   }
 }
-
-resource "aws_grafana_role_association" "admin_role" {
-  role         = "ADMIN"
-  user_ids     = ["9c6727bee3-35c6bc23-3fee-4125-a1ca-08ecd55b099c"]
-  workspace_id = aws_grafana_workspace.management_grafana.id
-}
-
-resource "aws_grafana_role_association" "editor_role" {
-  role         = "EDITOR"
-  user_ids     = ["9c6727bee3-71990616-0bf7-452a-bae0-ab74b5f7313c", "9c6727bee3-5ac629bc-c899-40c2-8c0f-0cd45457e0e7", "9c6727bee3-4a36c92a-5dd3-4b71-b7a4-269b8203eba0", "9c6727bee3-92011006-8c2a-40a8-a9d2-b48f2711a593"]
-  workspace_id = aws_grafana_workspace.management_grafana.id
-}
